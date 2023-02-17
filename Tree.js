@@ -68,6 +68,11 @@ export class Tree {
     }
 
     delete(root, value) {
+        let idx = this.numList.indexOf(value);
+        if (idx !== -1) {
+            this.numList.splice(idx, 1);
+        }
+
         if (!root) {
             return root;
         }
@@ -88,6 +93,47 @@ export class Tree {
         }
 
         return root;
+    }
+
+    find(root, value) {
+        if (root.data == value) {
+            return root;
+        }
+
+        if (value < root.data) {
+            return this.find(root.left, value);
+        }
+
+        if (value > root.data) {
+            return this.find(root.right, value);
+        }
+    }
+
+    levelOrder(root, func) {
+        if (!root) {
+            return null;
+        }
+        let currentNode = root;
+        let funcResults = [];
+        let q = [];
+        q.push(currentNode);
+        funcResults.push(func(currentNode.data));
+        while (q.length > 0) {
+            let currentNode = q[0];
+            
+            if (currentNode.left) {
+                q.push(currentNode.left);
+                funcResults.push(func(currentNode.left.data));
+            };
+            if (currentNode.right) {
+                q.push(currentNode.right);
+                funcResults.push(func(currentNode.right.data));
+            };
+            q.splice(0, 1);
+        }
+
+        return funcResults;
+
     }
 
     inorder(root) {
