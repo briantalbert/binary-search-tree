@@ -4,32 +4,52 @@ function squared(num) {
     return num * num;
 }
 
-let myList = [];
+function randomList(n, max) {
+    let randList = [];
+    for (let i = 0; i < n; i++) {
+        let num = Math.floor(Math.random() * max);
+        if (!randList.includes(num)) {
+            randList.push(num);
+        }
+    }
+    return randList;
+}
 
-myList = [2, 4, 6, 7, 1, 3, 5, 9, 8]
+function driver() {
+    let myList = randomList(10, 20);
+    console.log('Creating BST from array: ' + myList);
+    let myTree = new Tree(myList);
+    myTree.prettyPrint(myTree.root);
+    console.log('Is this tree balanced? Calling isBalanced()');
+    console.log(myTree.isBalanced(myTree.root) ? 'Yes it is!' : 'No it isn\'t!');
+    console.log('');
+    console.log('Various traversals:');
+    console.log('Preorder:\t' + myTree.preorder(myTree.root));
+    console.log('Postorder:\t' + myTree.postorder(myTree.root));
+    console.log('Inorder:\t' + myTree.inorder(myTree.root));
+    console.log('');
+    console.log('Unbalancing list by adding large numbers.');
+    let unbalancer = randomList(10, 200);
+    console.log('Adding array: ' + unbalancer);
+    
+    unbalancer.forEach(number => {
+        myTree.insert(number);
+    });
 
-let myTree = new Tree(myList);
-let root = myTree.root;
+    myTree.prettyPrint(myTree.root);
+    console.log('Is this tree balanced? Calling isBalanced()');
+    console.log(myTree.isBalanced(myTree.root) ? 'Yes it is!' : 'No it isn\'t!');
+    console.log('');
+    console.log('Rebalancing');
+    myTree = myTree.rebalance();
+    myTree.prettyPrint(myTree.root);
+    console.log('Is this tree balanced now? Calling isBalanced()');
+    console.log(myTree.isBalanced(myTree.root) ? 'Yes it is!' : 'No it isn\'t!');
+    console.log('');
+    console.log('Various traversals:');
+    console.log('Preorder:\t' + myTree.preorder(myTree.root));
+    console.log('Postorder:\t' + myTree.postorder(myTree.root));
+    console.log('Inorder:\t' + myTree.inorder(myTree.root));
+}
 
-myTree.prettyPrint(root);
-
-console.log('inorder traversal:');
-console.log(myTree.inorder(root));
-console.log('preorder:');
-console.log(myTree.preorder(root));
-console.log('postorder:');
-console.log(myTree.postorder(root));
-
-let randInt = Math.floor(Math.random() * (10 - 1) + 1);
-console.log('Removing ' + randInt + ' from tree.');
-myTree.delete(root, randInt);
-myTree.prettyPrint(root);
-console.log('(putting it back)');
-myTree.insert(randInt);
-myTree.prettyPrint(root);
-
-randInt = Math.floor(Math.random() * (10 - 1) + 1);
-console.log('Attempting to find ' + randInt);
-console.log(myTree.find(root, randInt)+"");
-console.log('Level order traversal, running all numbers through squaring function');
-console.log(myTree.levelOrder(root, squared));
+driver();

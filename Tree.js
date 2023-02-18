@@ -5,7 +5,6 @@ export class Tree {
         this.numList = list;
         list = this.cleanData(list);
         list.sort(function(a, b){return a - b});
-        console.log('Building tree from ' + list.length + ' item array: ' + list);
         this.root = this.buildTree(list);
     }
 
@@ -26,11 +25,11 @@ export class Tree {
         root.setRight(this.buildTree(rightHalf));
 
         return root;
+        
     }
 
     insert(value) {
         if (this.numList.includes(value)) {
-            console.log('dupe - ' + value + ' already in list');
             return;
         }
         this.numList.push(value);
@@ -136,28 +135,88 @@ export class Tree {
 
     }
 
-    inorder(root) {
-        if (root) {
-            this.inorder(root.left);
-            console.log(root.data);
-            this.inorder(root.right);
+    height(root) {
+        if (!root) {
+            return -1;
+        }
+
+        let leftHeight = this.height(root.left);
+        let rightHeight = this.height(root.right);
+
+        if (leftHeight > rightHeight) {
+            return leftHeight + 1;
+        } else {
+            return rightHeight + 1;
         }
     }
 
-    preorder(root) {
-        if (root) {
-            console.log(root.data);
-            this.preorder(root.left);
-            this.preorder(root.right);
+    depth(node) {
+        let root = this.root;
+        let value = node;
+        let depth = 0;
+        
+        while (root.data != value) {
+            if (value < root.data) {
+                depth++;
+                root = root.left;
+            } else if (value > root.data) {
+                depth++;
+                root = root.right;
+            } 
         }
+        return depth;
     }
 
-    postorder(root) {
-        if (root) {
-            this.postorder(root.left);
-            this.postorder(root.right);
-            console.log(root.data);
+    isBalanced(root) {
+        if (!root){
+            return true;
         }
+
+        let leftHeight = 1 + this.height(root.left);
+        let rightHeight = 1 + this.height(root.right);
+
+        let diff = Math.abs(leftHeight - rightHeight);
+
+        if (diff <= 1 && this.isBalanced(root.left) && this.isBalanced(root.right)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    rebalance() {
+        let numList = this.inorder(this.root);/* 
+        let newRoot = this.buildTree(numList); */
+        return new Tree(numList);
+    }
+
+    inorder(root, travList = []) {
+        if (root) {
+            this.inorder(root.left, travList);
+            travList.push(root.data);
+            this.inorder(root.right, travList);
+        }
+        return travList;
+    }
+
+    preorder(root, travList = []) {
+        if (root) {
+            travList.push(root.data);
+            this.preorder(root.left, travList);
+            this.preorder(root.right, travList);
+        }
+
+        return travList;
+    }
+
+    postorder(root, travList = []) {
+        if (root) {
+            this.postorder(root.left, travList);
+            this.postorder(root.right, travList);
+            travList.push(root.data);
+        }
+
+        return travList;
     }
 
     cleanData(list) {
